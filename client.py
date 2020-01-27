@@ -1,11 +1,9 @@
 import xmlrpc.client
 
-s = xmlrpc.client.ServerProxy('http://192.168.1.102:8004')
+s = xmlrpc.client.ServerProxy('http://localhost:8004')
 
 nombre = str(input('Ingresar Nombre: '))
-apellido = str(input('Ingresar Apellido: '))
-cedula = str(input('Ingresar Cedula: '))
-edad = str(input('Ingresar Edad: '))
+tipo = str(input('Ingresar Tipo: '))
 
 
-print(s.avatar(nombre,apellido,cedula,edad)) 
+print(s.registrar_mascota(nombre, tipo))
