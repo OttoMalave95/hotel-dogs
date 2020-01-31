@@ -136,11 +136,21 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
         else:
             return 'No hay mascotas registradas'
 
+    def cantidad_registros(cedula, nombre):
+        db = conexion_db()
+        mascota = db.mascotas.find_one({ "cedula": cedula, "nombre": nombre })
+
+        if mascota:
+            return 'Numero de veces registrada: ' + str(mascota.registros)
+        else:
+            return 'Mascota no registrada'
+
 
     server.register_function(registrar_mascota, 'registrar_mascota')
     server.register_function(asignar_mascota, 'asignar_mascota')
     server.register_function(retirar_mascota, 'retirar_mascota')
     server.register_function(habitaciones_ocupadas, 'habitaciones_ocupadas')
+    server.register_function(cantidad_registros, 'cantidad_registros')
 
     # Run the server's main loop
     server.serve_forever()
