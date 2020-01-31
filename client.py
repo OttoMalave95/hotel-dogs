@@ -49,19 +49,29 @@ def menu():
         sys.stdin.flush()
         eleccion = int(input("Elige: "))
 
-        switcher = {
-            1: registrar_mascota(),
-            2: "registrar_mascota()",
-            3: "registrar_mascota()",
-            4: "registrar_mascota()",
-            5: listado_mascotas(),
-            6: "registrar_mascota()"
-        }
+        # print("eleccion ", eleccion)
+        # getch.getch()
 
-        func = switcher.get(eleccion, lambda: "Invalid month")
-        
-        print(func)
+        if eleccion == 1:
+            registrar_mascota()
+        elif eleccion == 2:
+            # registrar_mascota()
+            pass
+        elif eleccion == 3:
+            # registrar_mascota()
+            pass
+        elif eleccion == 4:
+            # registrar_mascota()
+            pass
+        elif eleccion == 5:
+            listado_mascotas()
+        elif eleccion == 6:
+            # registrar_mascota()
+            pass
+        else:
+            print("\n Ha introducido una opcion invalida.. \n")
 
+        sys.stdin.flush()
         getch.getch()
 
 menu()
