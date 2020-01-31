@@ -70,7 +70,7 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
                     else:
                         habitaciones.append({
                             "mascota": mascota,
-                            "disponible": False
+                            "disponible": False,
                             "numero": len(habitaciones)
                         })
                         break
@@ -100,7 +100,7 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
         if hotel:
             habitaciones = hotel.habitaciones
             if len(habitaciones):
-                for h in habitaciones
+                for h in habitaciones:
                     if h.mascota.cedula == cedula and h.mascota.nombre == nombre:
                         h.mascota = None
                         h.disponible = True
