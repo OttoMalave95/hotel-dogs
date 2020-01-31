@@ -120,10 +120,27 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
         else:
             return 'No hay mascotas registradas en el hotel'
 
+    def habitaciones_ocupadas():
+        db = conexion_db()
+        hotel = db.hotel.find_one({})
+        if hotel:
+            habitaciones = hotel.habitaciones
+            if len(habitaciones):
+                cantidad = 0
+                for h in habitaciones:
+                    if not h.disponible:
+                        cantidad = cantidad + 1
+                return 'cantidad de habitaciones ocupadas: ' + str(cantidad)
+            else:
+                return 'No hay mascotas registradas'
+        else:
+            return 'No hay mascotas registradas'
+
 
     server.register_function(registrar_mascota, 'registrar_mascota')
     server.register_function(asignar_mascota, 'asignar_mascota')
     server.register_function(retirar_mascota, 'retirar_mascota')
+    server.register_function(habitaciones_ocupadas, 'habitaciones_ocupadas')
 
     # Run the server's main loop
     server.serve_forever()
