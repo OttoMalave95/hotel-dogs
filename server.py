@@ -71,12 +71,14 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
                         habitaciones.append({
                             "mascota": mascota,
                             "disponible": False
+                            "numero": len(habitaciones)
                         })
                         break
             else:
                 habitaciones.append({
                     "mascota": mascota,
-                    "disponible": False
+                    "disponible": False,
+                    "numero": len(habitaciones)
                 })
 
             db.hotel.update_one({ "rif": "1234" }, {
@@ -89,8 +91,39 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
         else:
             result = 'Mascota no registrada'
 
+    def retirar_mascota(cedula, nombre):
+        db = conexion_db()
+        mascota = db.mascotas.find_one({ "cedula": cedula, "nombre": nombre })
+        if not mascota:
+            return 'Mascota no registrada'
+        hotel = db.hotel.find_one({})
+        if hotel:
+            habitaciones = hotel.habitaciones
+            if len(habitaciones):
+                for h in habitaciones
+                    if h.mascota.cedula == cedula and h.mascota.nombre == nombre:
+                        h.mascota = None
+                        h.disponible = True
+                        break
+                    else:
+                        return 'La mascota no esta registrada en el hotel'
+                
+                db.hotel.update_one({ "rif": "1234" }, {
+                    "$set": {
+                        "habitaciones": habitaciones
+                    }
+                })
+
+                return 'Mascota retirada del hotel'
+            else:
+                return 'No hay mascotas registradas en el hotel'
+        else:
+            return 'No hay mascotas registradas en el hotel'
+
+
     server.register_function(registrar_mascota, 'registrar_mascota')
     server.register_function(asignar_mascota, 'asignar_mascota')
+    server.register_function(retirar_mascota, 'retirar_mascota')
 
     # Run the server's main loop
     server.serve_forever()
