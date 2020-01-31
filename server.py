@@ -20,15 +20,66 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as server:
     server.register_introspection_functions()
 
-    def registrar_mascota(nombre, tipo):
+    def registrar_mascota(cedula, nombre, especie, sexo, raza, color):
         db = conexion_db()
         mascotas = db.mascotas
-        return mascotas.insert_one({
+        id = mascotas.insert_one({
+                "cedula": cedula,
                 "nombre": nombre,
-                "tipo": tipo,
+                "especie": especie,
+                "sexo": sexo,
+                "raza": raza,
+                "color": color,
             }).inserted_id
+        result = 'Ocurrio un error al registrar la mascota'
+        if id:
+            result = 'Mascota registrada con exito'
+        return result
+
+    def asignar_mascota(cedula, nombre):
+        db = conexion_db()
+        mascota = db.mascotas.find_one({ "cedula": cedula, "nombre": nombre })
+        if mascota:
+            hotel = db.hotel.find_one({})
+            if not hotel:
+                hotel.insert_one({
+                    "nombre": "Hotel de Perros",
+                    "rif": "1234",
+                    "habitaciones": []
+                }).inserted_id
+
+            habitaciones = hotel.habitaciones
+
+            if len(habitaciones):
+                for h in habitaciones:
+                    if h.disponible == True:
+                        h.mascota = mascota
+                        h.disponible = False
+                        break
+                    else:
+                        habitaciones.append({
+                            "mascota": mascota,
+                            "disponible": False
+                        })
+                        break
+            else:
+                habitaciones.append({
+                    "mascota": mascota,
+                    "disponible": False
+                })
+
+            db.hotel.update_one({ "rif": "1234" }, {
+                "$set": {
+                    "habitaciones": habitaciones
+                }
+            })
+
+            return 'Mascota asginada a una habitación'
+        else:
+            result = 'Mascota no registrada'
 
     server.register_function(registrar_mascota, 'registrar_mascota')
+    server.register_function(asignar_mascota, 'asignar_mascota')
 
     # Run the server's main loop
     server.serve_forever()
