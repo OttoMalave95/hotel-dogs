@@ -63,7 +63,7 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
 
             if len(habitaciones):
                 for h in habitaciones:
-                    if h['mascota']['cedula'] == cedula and h['mascota']['nombre'] == nombre:
+                    if h['mascota'] and h['mascota']['cedula'] == cedula and h['mascota']['nombre'] == nombre:
                         return 'La mascota ya tiene una habitación asignada'
                 for h in habitaciones:
                     if h['disponible'] == True:
@@ -92,7 +92,7 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
 
             return 'Mascota asginada a una habitación'
         else:
-            result = 'Mascota no registrada'
+            return 'Mascota no registrada'
 
     def retirar_mascota(cedula, nombre):
         db = conexion_db()
@@ -101,12 +101,12 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
             return 'Mascota no registrada'
         hotel = db.hotel.find_one({})
         if hotel:
-            habitaciones = hotel.habitaciones
+            habitaciones = hotel['habitaciones']
             if len(habitaciones):
                 for h in habitaciones:
-                    if h.mascota.cedula == cedula and h.mascota.nombre == nombre:
-                        h.mascota = None
-                        h.disponible = True
+                    if h['mascota']['cedula'] == cedula and h['mascota']['nombre'] == nombre:
+                        h['mascota'] = None
+                        h['disponible'] = True
                         break
                     else:
                         return 'La mascota no esta registrada en el hotel'
@@ -127,11 +127,11 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
         db = conexion_db()
         hotel = db.hotel.find_one({})
         if hotel:
-            habitaciones = hotel.habitaciones
+            habitaciones = hotel['habitaciones']
             if len(habitaciones):
                 cantidad = 0
                 for h in habitaciones:
-                    if not h.disponible:
+                    if not h['disponible']:
                         cantidad = cantidad + 1
                 return 'cantidad de habitaciones ocupadas: ' + str(cantidad)
             else:
@@ -144,7 +144,7 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
         mascota = db.mascotas.find_one({ "cedula": cedula, "nombre": nombre })
 
         if mascota:
-            return 'Numero de veces registrada: ' + str(mascota.registros)
+            return 'Numero de veces registrada: ' + str(mascota['registros'])
         else:
             return 'Mascota no registrada'
 
@@ -152,12 +152,12 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
         db = conexion_db()
         hotel = db.hotel.find_one({})
         if hotel:
-            habitaciones = hotel.habitaciones
+            habitaciones = hotel['habitaciones']
             if len(habitaciones):
                 lista_mascotas = []
                 for h in habitaciones:
-                    if h.disponible:
-                        informacion = 'dueño: ' + h.mascota.cedula + ' mascota: ' + h.mascota.nombre + ' habitación: ' + str(h.numero)
+                    if h['disponible']:
+                        informacion = 'dueño: ' + h['mascota']['cedula'] + ' mascota: ' + h['mascota']['nombre'] + ' habitación: ' + str(h['numero'])
                         lista_mascotas.append(informacion)
                 return lista_mascotas
             else:
