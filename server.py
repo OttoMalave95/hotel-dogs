@@ -32,20 +32,19 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
                     "sexo": sexo,
                     "raza": raza,
                     "color": color,
-                    "registros": 0,
+                    "registros": 1,
                 }).inserted_id
             result = 'Ocurrio un error al registrar la mascota'
             if id:
                 result = 'Mascota registrada con exito'
             return result
         else:
-            n = mascota.registros + 1
             db.mascotas.update_one({ "cedula": cedula, "nombre": nombre }, {
                 "$set": {
-                    "registros": n
+                    "registros": mascota['registros'] + 1
                 }
             })
-            result = 'Mascota ya registrada'
+            return 'Mascota ya registrada'
 
     def asignar_mascota(cedula, nombre):
         db = conexion_db()
