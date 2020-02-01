@@ -155,10 +155,14 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
             if len(habitaciones):
                 lista_mascotas = []
                 for h in habitaciones:
-                    if h['disponible']:
-                        informacion = 'dueño: ' + h['mascota']['cedula'] + ' mascota: ' + h['mascota']['nombre'] + ' habitación: ' + str(h['numero'])
+                    if not h['disponible']:
+                        informacion = 'dueño: ' + h['mascota']['cedula'] + ', mascota: ' + h['mascota']['nombre'] + ', habitación: ' + str(h['numero'])
                         lista_mascotas.append(informacion)
-                return lista_mascotas
+
+                if lista_mascotas:
+                    return lista_mascotas
+                else:
+                    return 'No hay mascotas en el hotel'
             else:
                 return 'No hay mascotas registradas'
         else:
@@ -170,6 +174,7 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
     server.register_function(retirar_mascota, 'retirar_mascota')
     server.register_function(habitaciones_ocupadas, 'habitaciones_ocupadas')
     server.register_function(cantidad_registros, 'cantidad_registros')
+    server.register_function(listado_mascotas, 'listado_mascotas')
 
     # Run the server's main loop
     server.serve_forever()

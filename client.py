@@ -59,7 +59,10 @@ def listado_mascotas():
     os.system("clear")
     print("*------ listado de Mascotas Albergadas ------* \n")
 
-    return print("\n", s.listado_mascotas())
+    lista = s.listado_mascotas()
+    for l in lista:
+        print(l)
+    return True
 
 
 def cantidad_registros():
@@ -106,6 +109,9 @@ def menu():
             listado_mascotas()
         elif eleccion == 6:
             cantidad_registros()
+        elif eleccion == 7:
+            print("\n Saliendo del programa... \n")
+            break
         else:
             print("\n Ha introducido una opcion invalida.. \n")
 
