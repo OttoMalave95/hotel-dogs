@@ -51,34 +51,37 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
         db = conexion_db()
         mascota = db.mascotas.find_one({ "cedula": cedula, "nombre": nombre })
         if mascota:
-            hotel = db.hotel.find_one({})
-            if not hotel:
-                hotel.insert_one({
+            if not db.hotel.find_one({}):
+                id_hotel = db.hotel.insert_one({
                     "nombre": "Hotel de Perros",
                     "rif": "1234",
                     "habitaciones": []
                 }).inserted_id
 
-            habitaciones = hotel.habitaciones
+            hotel = db.hotel.find_one({})
+            habitaciones = hotel['habitaciones']
 
             if len(habitaciones):
                 for h in habitaciones:
-                    if h.disponible == True:
-                        h.mascota = mascota
-                        h.disponible = False
+                    if h['mascota']['cedula'] == cedula and h['mascota']['nombre'] == nombre:
+                        return 'La mascota ya tiene una habitación asignada'
+                for h in habitaciones:
+                    if h['disponible'] == True:
+                        h['mascota'] = mascota
+                        h['disponible'] = False
                         break
                     else:
                         habitaciones.append({
                             "mascota": mascota,
                             "disponible": False,
-                            "numero": len(habitaciones)
+                            "numero": len(habitaciones) + 1
                         })
                         break
             else:
                 habitaciones.append({
                     "mascota": mascota,
                     "disponible": False,
-                    "numero": len(habitaciones)
+                    "numero": 1
                 })
 
             db.hotel.update_one({ "rif": "1234" }, {
