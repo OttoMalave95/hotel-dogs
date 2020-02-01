@@ -7,7 +7,6 @@ s = xmlrpc.client.ServerProxy('http://localhost:8004')
 
 def registrar_mascota():
     os.system("clear") 
-
     print("*------ Registrar Mascota ------* \n")
 
     print("* Ingrese los siguientes Datos del Dueno: \n")
@@ -23,12 +22,58 @@ def registrar_mascota():
     return print("\n", s.registrar_mascota(cedula, nombre, especie, sexo, raza, color))
 
 
+def asignar_mascota():
+    os.system("clear")
+    print("*------ Retirar Mascota ------* \n")
+
+    print("* Ingrese los siguientes Datos del Dueno: \n")
+    cedula = str(input("Cedula: "))
+
+    print("\n* Ingrese los siguientes Datos de la Mascota: \n")
+    nombre = str(input("Nombre: "))
+
+    return print("\n", s.asignar_mascota(cedula, nombre))
+
+
+def retirar_mascota():
+    os.system("clear")
+    print("*------ Retirar Mascota ------* \n")
+
+    print("* Ingrese los siguientes Datos del Dueno: \n")
+    cedula = str(input("Cedula: "))
+
+    print("\n* Ingrese los siguientes Datos de la Mascota: \n")
+    nombre = str(input("Nombre: "))
+
+    return print("\n", s.retirar_mascota(cedula, nombre))
+
+
+def habitaciones_ocupadas():
+    os.system("clear")
+    print("*------ Habitaciones Ocupadas ------* \n")
+
+    return print("\n", s.habitaciones_ocupadas())
+
+
 def listado_mascotas():
     os.system("clear")
-
     print("*------ listado de Mascotas Albergadas ------* \n")
 
     return print("\n", s.listado_mascotas())
+
+
+def cantidad_registros():
+    os.system("clear")
+    print("*------ Registros Mascota ------* \n")
+
+    print("* Ingrese los siguientes Datos del Dueno: \n")
+    cedula = str(input("Cedula: "))
+
+    print("\n* Ingrese los siguientes Datos de la Mascota: \n")
+    nombre = str(input("Nombre: "))
+
+    return print("\n", s.cantidad_registros(cedula, nombre))
+
 
 def menu():
     menu = """ 
@@ -49,25 +94,18 @@ def menu():
         sys.stdin.flush()
         eleccion = int(input("Elige: "))
 
-        # print("eleccion ", eleccion)
-        # getch.getch()
-
         if eleccion == 1:
             registrar_mascota()
         elif eleccion == 2:
-            # registrar_mascota()
-            pass
+            asignar_mascota()
         elif eleccion == 3:
-            # registrar_mascota()
-            pass
+            retirar_mascota()
         elif eleccion == 4:
-            # registrar_mascota()
-            pass
+            habitaciones_ocupadas()
         elif eleccion == 5:
             listado_mascotas()
         elif eleccion == 6:
-            # registrar_mascota()
-            pass
+            cantidad_registros()
         else:
             print("\n Ha introducido una opcion invalida.. \n")
 
