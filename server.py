@@ -102,21 +102,24 @@ with SimpleXMLRPCServer(("localhost", 8004),requestHandler=RequestHandler) as se
         if hotel:
             habitaciones = hotel['habitaciones']
             if len(habitaciones):
+                mascota_retirada = False
                 for h in habitaciones:
-                    if h['mascota']['cedula'] == cedula and h['mascota']['nombre'] == nombre:
+                    if h['mascota'] and h['mascota']['cedula'] == cedula and h['mascota']['nombre'] == nombre:
                         h['mascota'] = None
                         h['disponible'] = True
-                        break
-                    else:
-                        return 'La mascota no esta registrada en el hotel'
-                
-                db.hotel.update_one({ "rif": "1234" }, {
-                    "$set": {
-                        "habitaciones": habitaciones
-                    }
-                })
+                        mascota_retirada = True
 
-                return 'Mascota retirada del hotel'
+                if mascota_retirada:
+                    db.hotel.update_one({ "rif": "1234" }, {
+                        "$set": {
+                            "habitaciones": habitaciones
+                        }
+                    })
+
+                    return 'Mascota retirada del hotel'
+                else:
+                    return 'La mascota no esta registrada en el hotel'
+                
             else:
                 return 'No hay mascotas registradas en el hotel'
         else:

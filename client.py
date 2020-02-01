@@ -60,8 +60,13 @@ def listado_mascotas():
     print("*------ listado de Mascotas Albergadas ------* \n")
 
     lista = s.listado_mascotas()
-    for l in lista:
-        print(l)
+    if type(lista) == str:
+        print(lista)
+    else:
+        indice = 1
+        for mascota in lista:
+            print('#' + str(indice), mascota)
+            indice = indice + 1
     return True
 
 
